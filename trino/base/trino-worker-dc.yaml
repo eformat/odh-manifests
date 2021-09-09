@@ -42,6 +42,8 @@ spec:
                 path: hive.properties
               - key: customerchurn.properties  
                 path: customerchurn.properties
+              - key: elasticsearch.properties
+                path: elasticsearch.properties
 
         - name: trino-kafka-volume
           secret:
@@ -88,7 +90,7 @@ spec:
               mountPath: /etc/trino/catalog
             - name: trino-kafka-volume
               mountPath: /etc/trino/kafka
-
+            - name: trino-kafka-volume
           image: $(trino_image)
           args:
             - --config=/etc/trino/config-worker.properties
