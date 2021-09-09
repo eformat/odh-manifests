@@ -89,7 +89,6 @@ spec:
               mountPath: /etc/trino/catalog
             - name: trino-kafka-volume
               mountPath: /etc/trino/kafka
-            - name: trino-kafka-volume
           image: $(trino_image)
           args:
             - --config=/etc/trino/config-worker.properties
