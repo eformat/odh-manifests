@@ -16,6 +16,8 @@ spec:
                 path: hive.properties
               - key: customerchurn.properties
                 path: customerchurn.properties
+              - key: elasticsearch.properties
+                path: elasticsearch.properties
 
         - name: trino-kafka-volume
           secret:
