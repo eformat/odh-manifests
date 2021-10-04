@@ -4,7 +4,7 @@ bases:
   - ../../base
 resources:
   - s3-secret.yaml
-
+  - trino-catalog-sealedsecret.yaml
 
 patchesStrategicMerge:
   - hive-metastore-dc.yaml
@@ -13,4 +13,3 @@ patchesStrategicMerge:
   - trino-worker-dc.yaml
   - trino-coordinator-dc.yaml
 #  - trino-catalog-secret.yaml
-  - trino-catalog-sealedsecret.yaml
