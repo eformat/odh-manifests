@@ -13,22 +13,36 @@ spec:
       labels:
         app: mlflow
     spec:
+      serviceAccountName: mlflow-proxy
       initContainers:
         - name: waitkafka
           image: 'registry.access.redhat.com/rhscl/postgresql-96-rhel7:latest'
           command: ['sh', '-c', "until nslookup mlflow-db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mlflow db service; sleep 2; done"]
       containers:
+        - name: oauth-proxy
+          image: openshift/oauth-proxy:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: public
+          args:
+            - --https-address=
+            - --http-address=:5000
+            - --provider=openshift
+            - --openshift-service-account=mlflow-proxy
+            - --upstream=http://localhost:5500
+            - --cookie-secret=SECRET
         - name: mlflow-deployment
           image: quay.io/ml-aml-workshop/mlflow:0.0.2
           imagePullPolicy: Always
           args:
             - mlflow
             - server
-            - --host=0.0.0.0
-            - --port=5000
-            - --backend-store-uri=postgresql://postgres:postgres@mlflow-db:5432/postgres
-            - --default-artifact-root=s3://mlflow/
-            - --workers=2
+            - '--host 0.0.0.0'
+            - '--port 5500'
+            - '--backend-store-uri postgresql://postgres:postgres@mlflow-db:5432/postgres'
+            - '--default-artifact-root s3://mlflow/'
+            - '--workers 2'
           env:
             - name: MLFLOW_S3_ENDPOINT_URL
               value: http://minio-ml-workshop:9000/
@@ -42,7 +56,7 @@ spec:
           #   value: "true"
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: 5500
               protocol: TCP
           resources:
             requests:
@@ -59,6 +73,9 @@ spec:
     - port: 5000
       targetPort: 5000
       name: http
+    - port: 5500
+      targetPort: 5500
+      name: http-mlflow  
   selector:
     app: mlflow
 
