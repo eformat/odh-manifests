@@ -5,6 +5,7 @@ bases:
 resources:
   - s3-secret.yaml
   - trino-catalog-sealedsecret.yaml
+  - trino-catalog-lodestar-sealedsecret.yaml  
 
 patchesStrategicMerge:
   - hive-metastore-dc.yaml
