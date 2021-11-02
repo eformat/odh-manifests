@@ -22,3 +22,4 @@ spec:
           volumeMounts:
             - $patch: delete
               name: trino-kafka-volume
+              mountPath: /etc/trino/kafka
