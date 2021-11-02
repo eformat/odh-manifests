@@ -12,3 +12,4 @@ patchesStrategicMerge:
   - aws-secret.yaml
   - trino-worker-dc.yaml
   - trino-coordinator-dc.yaml
+  - delete-trino-catalog-secret.yaml
