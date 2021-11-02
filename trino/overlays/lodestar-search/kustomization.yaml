@@ -9,5 +9,6 @@ resources:
 patchesStrategicMerge:
   - hive-metastore-dc.yaml
   - hive-config.yaml
+  - aws-secret.yaml
   - trino-worker-dc.yaml
   - trino-coordinator-dc.yaml
