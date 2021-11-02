@@ -3,6 +3,7 @@ kind: Kustomization
 bases:
   - ../../base
 resources:
+  - s3-secret.yaml
   - trino-catalog-lodestar-sealedsecret.yaml
 
 patchesStrategicMerge:
