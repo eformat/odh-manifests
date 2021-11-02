@@ -14,3 +14,11 @@ spec:
             items:
               - key: elasticsearch.properties
                 path: elasticsearch.properties
+        - $patch: delete
+          name: trino-kafka-volume
+
+      containers:
+        - name: trino-worker
+          volumeMounts:
+            - $patch: delete
+              name: trino-kafka-volume
