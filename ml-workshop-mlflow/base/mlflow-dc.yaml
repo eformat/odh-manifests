@@ -20,7 +20,7 @@ spec:
           command: ['sh', '-c', "until nslookup mlflow-db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mlflow db service; sleep 2; done"]
       containers:
         - name: oauth-proxy
-          image: openshift/oauth-proxy:latest
+          image: quay.io/ml-aml-workshop/ose-oauth-proxy:v4.8
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
@@ -38,11 +38,11 @@ spec:
           args:
             - mlflow
             - server
-            - '--host 0.0.0.0'
-            - '--port 5500'
-            - '--backend-store-uri postgresql://postgres:postgres@mlflow-db:5432/postgres'
-            - '--default-artifact-root s3://mlflow/'
-            - '--workers 2'
+            - '--host=0.0.0.0'
+            - '--port=5500'
+            - '--backend-store-uri=postgresql://postgres:admin@mlflow-db:5432/postgres'
+            - '--default-artifact-root=s3://mlflow/'
+            - '--workers=2'
           env:
             - name: MLFLOW_S3_ENDPOINT_URL
               value: http://minio-ml-workshop:9000/

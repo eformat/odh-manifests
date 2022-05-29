@@ -60,7 +60,7 @@ spec:
             - /git-sync
           env:
             - name: GIT_SYNC_REPO
-              value: 'https://github.com/masoodfaisal/dags/'
+              value: 'https://github.com/airflow-dags/dags/'
             - name: GIT_SYNC_DEST
               value: gitdags
             - name: GIT_SYNC_BRANCH
@@ -127,6 +127,12 @@ spec:
               value: "IKnowWhatYouDidLastYear"
             - name: AIRFLOW__CORE__SENSITIVE_VAR_CONN_NAMES
               value: AWS_SECRET_ACCESS_KEY,AWS_ACCESS_KEY_ID
+            - name: AIRFLOW_BASE_URL
+              value: http://127.0.0.1:8080
+            - name: AIRFLOW_LDAP_ENABLE
+              value: "no"
+            - name: AIRFLOW__WEBSERVER__SECRET_KEY
+              value: "IKnowWhatYouDidLastYear"
           envFrom:
           ports:
             - name: task-logs
@@ -213,7 +219,7 @@ spec:
             - /git-sync
           env:
             - name: GIT_SYNC_REPO
-              value: 'https://github.com/masoodfaisal/dags/'
+              value: 'https://github.com/airflow-dags/dags/'
             - name: GIT_SYNC_DEST
               value: gitdags
             - name: GIT_SYNC_BRANCH
@@ -236,7 +242,7 @@ spec:
           terminationMessagePolicy: File
           image: 'k8s.gcr.io/git-sync/git-sync:v3.2.2'
         - name: airflow-web
-          image: quay.io/ml-aml-workshop/airflow-custom:2.1.6.web
+          image: quay.io/ml-aml-workshop/airflow-custom:2.1.7.web
           imagePullPolicy: "Always"
 #          securityContext:
 #            runAsUser: 1001
@@ -301,8 +307,30 @@ spec:
               value: "True"
             - name: OAUTH_API_BASE_URL
               value: "https://openshift.default.svc.cluster.local:443"
+            # - name: REQUESTS_CA_BUNDLE
+            #   value: "/opt/bitnami/python/lib/python3.8/site-packages/certifi/cacert.pem" 
             - name: REQUESTS_CA_BUNDLE
-              value: "/tmp/combined.pem" 
+              value: "" 
+            - name: CURL_CA_BUNDLE
+              value: "" 
+            - name: AUTH_ROLE_PUBLIC 
+              value: "Public"
+            - name: AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX
+              value: "True"
+            - name: OAUTH_REDIRECT_URL
+              value:  https://ap2-airflow2-ml-workshop.apps.cluster-wqs7w.wqs7w.sandbox1012.opentlc.com
+            - name: OAUTH_TOKEN_URL
+              value: https://oauth-openshift.apps.cluster-wqs7w.wqs7w.sandbox1012.opentlc.com/oauth/token
+            - name: OAUTH_AUTHORIZE_URL
+              value: https://oauth-openshift.apps.cluster-wqs7w.wqs7w.sandbox1012.opentlc.com/oauth/authorize
+            - name: AIRFLOW_NAMESPACE
+              value: ml-workshop
+            - name: SA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: airflow2-proxy
+                  key: token              
+
             - name: SA_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -395,8 +423,8 @@ spec:
               weight: 1
         nodeAffinity:
 
-      # securityContext:
-      #   fsGroup: 1001
+      securityContext:
+        fsGroup: 1000630000
       automountServiceAccountToken: false
       # initContainers:
       #   - name: init-chmod-data
@@ -419,7 +447,7 @@ spec:
       #         mountPath: /bitnami/postgresql
       containers:
         - name: app-aflow-postgresql
-          image: registry.redhat.io/rhel8/postgresql-10:1-154
+          image: quay.io/internaldatahub/postgresql-96-centos7:9.6
           #docker.io/bitnami/postgresql:10.7.0
           imagePullPolicy: "Always"
           resources:
@@ -766,7 +794,7 @@ spec:
             - /git-sync
           env:
             - name: GIT_SYNC_REPO
-              value: 'https://github.com/masoodfaisal/dags/'
+              value: 'https://github.com/airflow-dags/dags/'
             - name: GIT_SYNC_DEST
               value: gitdags
             - name: GIT_SYNC_BRANCH
